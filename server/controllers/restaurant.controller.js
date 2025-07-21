@@ -85,7 +85,7 @@ restaurantController.update = async (req, res) => {
   await Restaurant.update({title, type, img},
     {where:{id:id}}
   ).then((num)=>{
-    if(num==1){
+    if(num[0] === 1){
       res.send({message: "Update restaurant successfully"})
     }else{
       res.status(404).send({message: `Cannot update Restaurant with id: ${id}. Maybe Restaurant was not found or req.body is empty`})

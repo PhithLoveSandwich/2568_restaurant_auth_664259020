@@ -22,7 +22,7 @@ const handleSearch = (keyword) =>{
 
   useEffect(() => {
     //call api: getAllRestaurants
-    fetch("http://localhost:3000/restaurants").then((res)=>{
+    fetch("http://localhost:5000/api/v1/restaurant/").then((res)=>{
       //convert to json
       return res.json()
     }).then((Response)=>{

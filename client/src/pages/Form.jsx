@@ -12,9 +12,13 @@ const Form = () => {
     };
     const handleSubmit = async () => {
         try {
-            const response = await fetch("http://localhost:3000/restaurants",{
+            const response = await fetch("http://localhost:5000/api/v1/restaurant/",{
                 method: "POST",
-                body: JSON.stringify(restaurant)
+                body: JSON.stringify(restaurant),
+                headers:
+                {
+                  "Content-Type" : "application/json"
+                }
             });
             if (response.ok){
                 alert("Restaurant added sucessfully")
