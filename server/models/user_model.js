@@ -1,30 +1,30 @@
 import {DataTypes} from "sequelize"
 import sequelize from "./db.js"
-const Restaurant = sequelize.define("restaurant",{
-    id:{
-        type: DataTypes.INTEGER,
+const User = sequelize.define("user",{
+    username:{
+        type: DataTypes.STRING,
         primaryKey: true,
-        autoIncrement: true,
+        allNull: false,
     },
-    title: {
+    name: {
         type: DataTypes.STRING,
         allNull: false,
     },
-    type: {
+    email: {
         type: DataTypes.STRING,
         allNull: false,
     },
-    img: {
+        password: {
         type: DataTypes.STRING,
         allNull: false,
     },
 });
 
-Restaurant.sync({force:false})
+User.sync({force:false})
 .then(() => {
-    console.log("Table Restaurant created or already exists");
+    console.log("Table User created or already exists");
 })
 .catch((error)=>{
     console.log("Error creating table", error);
 });
-export default Restaurant;
+export default User;
