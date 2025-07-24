@@ -1,6 +1,7 @@
 import db from "../models/index.js";
 const User = db.User;
 const Role = db.Role;
+import config from "../config/auth.config.js"; // นำเข้า config สำหรับ JWT secret
 import bcrypt from "bcryptjs"; // เข้ารหัสผ่าน
 import jwt from "jsonwebtoken"; // สร้าง token
 
@@ -22,12 +23,12 @@ authController.signup = async (req, res) => {
             return;
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = {
             username,
             name,
             email,
-            password: hashedPassword,
+            password: bcrypt.hashSync(password, 8),
         };
 
         User.create(newUser).then((user) => {
@@ -68,4 +69,41 @@ authController.signup = async (req, res) => {
     });
 };
 
+authController.signin = async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        res.status(400).send({ message: "Username or Password can not be empty!" });
+        return;
+    };
+    await User.findOne({ where: { username: username } }).then((user) => {
+        if (!user) {
+            res.status(404).send({ message: "User not found!" });
+            return;
+        }
+        const passwordIsValid = bcrypt.compareSync(password, user.password);
+        if (!passwordIsValid) {
+            res.status(401).send({ accessToken: null, message: "Invalid Password!" });
+            return;
+        }
+        // Valid User
+        const token = jwt.sign({ username: user.username }, config.secret, { expiresIn: 86400 }); // 24h 60s*60m*24h
+        user.getRoles().then((roles) => {
+            const authorities = [];
+            for (let i = 0; i < roles.length; i++) {
+                authorities.push("ROLE_" + roles[i].name.toUpperCase());
+            }
+            res.send({
+                token: token,
+                authorities: authorities,
+                userinfo: {
+                    name: user.name,
+                    email: user.email,
+                    username: user.username,
+                },
+            });
+        }).catch((error) => {
+            res.status(404).send({ message: "something went wrong while signing in" });
+        });
+    });
+};
 export default authController;

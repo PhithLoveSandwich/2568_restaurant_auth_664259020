@@ -56,8 +56,8 @@ const NavBar = () => {
         </ul>
       </div>
       <div className="navbar-end flex gap-2">
-        <a className="btn btn-outline btn-primary">Register</a>
-        <a className="btn btn-outline btn-secondary">Log In</a>
+        <a href="/signup" className="btn btn-outline btn-primary" >Register</a>
+        <a href="login" className="btn btn-outline btn-secondary">Log In</a>
       </div>
     </div>
   );

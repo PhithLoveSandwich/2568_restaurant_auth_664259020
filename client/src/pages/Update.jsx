@@ -93,7 +93,7 @@ const Update = () => {
         </div>
       <div className="flex flex-center justify-center gap-4 mt-6">
         <a className="btn btn-outline btn-primary" onClick={handleSubmit}>Update</a>
-        <a className="btn btn-outline btn-secondary">Cancel</a>
+        <a href="/" className="btn btn-outline btn-secondary">Cancel</a>
       </div>
     </div>
   )

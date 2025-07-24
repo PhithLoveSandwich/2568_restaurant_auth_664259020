@@ -3,6 +3,7 @@ import express from "express";
 const router = express.Router();
 
 // POST https://localhost:5000/api/v1/auth/register
-router.post("/", authController.signup);
-
+router.post("/signup", authController.signup);
+// POST https://localhost:5000/api/v1/auth/login
+router.post("/signin", authController.signin);
 export default router;
