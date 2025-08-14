@@ -1,128 +1,106 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
 import Navbar from "../components/Navbar";
 import AuthServices from '../services/auth_services';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const SignUp = () => {
-    const [user, setUser] = useState({
-        username : '',
-        name : '',
-        email : '',
-        password : '',
-    });
-    const handleChange = (e) =>{
-        const { name, value } = e.target;
-        setUser({...user , [name]: value});
-    };
+  const navigate = useNavigate();
 
-    const handleSubmit = async () => {
-  try {
-    const response = await fetch("http://localhost:5000/api/v1/auth/signup", {
-      method: "POST",
-      body: JSON.stringify(user),
-      headers: {
-        "Content-Type": "application/json"
+  const [user, setUser] = useState({
+    username: '',
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await AuthServices.register(
+        user.username,
+        user.name,
+        user.email,
+        user.password
+      );
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "User registered successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        // Reset form
+        setUser({
+          username: '',
+          name: '',
+          email: '',
+          password: '',
+        });
+
+        navigate("/login");
       }
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      await Swal.fire({
-        icon: "success",
-        title: "Register Success",
-        text: "Your account has been created successfully!",
-        showConfirmButton: false,
-        timer: 1500
-      });
-
-      setUser({
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-      });
-
-      window.location.href = "/login"; // สมัครเสร็จส่งไปหน้า login
-    } else {
+    } catch (error) {
+      console.error("Registration error:", error);
       Swal.fire({
         icon: "error",
-        title: "Register Failed",
-        text: data.message || "Something went wrong",
+        title: "Registration Failed",
+        text: error?.response?.data?.message || error.message,
       });
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "An error occurred while registering",
-    });
-    console.error("Register error:", error);
-  }
-};
+  };
 
-
-    // const handleSubmit = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:5000/api/v1/auth/signup",{
-    //             method: "POST",
-    //             body: JSON.stringify(user),
-    //             headers:
-    //             {
-    //               "Content-Type" : "application/json"
-    //             }
-    //         });
-    //         if (response.ok){
-    //             alert("User register sucessfully!")
-    //             setUser({
-    //               username : '',
-    //               name : '',
-    //               email : '',
-    //               password : '',
-    //             })
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
   return (
     <div className="container mx-auto">
-        <Navbar />
-        <div>
-        <h1 className="title justify-center text-3xl text-center m-5 p-5">
-          Grab Restaurant Add Form
-        </h1>
+      <Navbar />
+      <div className="flex justify-center items-center min-h-screen bg-base-300">
+        <div className="card w-full max-w-md shadow-xl bg-base-100">
+          <div className="card-body">
+            <h1 className="text-3xl font-bold text-center mb-5">
+              Grab Restaurant Register Form
+            </h1>
+
+            {["username", "name", "email", "password"].map((field) => (
+              <fieldset key={field} className="fieldset mb-4">
+                <legend className="fieldset-legend">{field.charAt(0).toUpperCase() + field.slice(1)}:</legend>
+                <input
+                  type={field === "password" ? "password" : "text"}
+                  className="input w-full"
+                  placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)}...`}
+                  onChange={handleChange}
+                  value={user[field]}
+                  name={field}
+                  required
+                />
+              </fieldset>
+            ))}
+
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                className="btn btn-outline btn-primary"
+                onClick={handleSubmit}
+              >
+                Register
+              </button>
+              <a
+                href="/"
+                className="btn btn-outline btn-secondary"
+              >
+                Cancel
+              </a>
+            </div>
+          </div>
         </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Username:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Username..." onChange={handleChange} value={user.username} name = "username"/>
-            </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Name:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Name..." onChange={handleChange} value={user.name} name = "name"/>
-            </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Email:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Email..." onChange={handleChange} value={user.email} name = "email"/>
-            </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Password:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Password..." onChange={handleChange} value={user.password} name = "password"/>
-            </fieldset>
-        </div>
-      <div className="flex flex-center justify-center gap-4 mt-6">
-        <a className="btn btn-outline btn-primary" onClick={handleSubmit}>Register</a>
-        <a href="/" className="btn btn-outline btn-secondary">Cancel</a>
       </div>
     </div>
-  )
+  );
 };
 
 export default SignUp;
