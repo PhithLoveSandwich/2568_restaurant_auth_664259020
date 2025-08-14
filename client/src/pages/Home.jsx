@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from "react";
 import Navbar from "../components/Navbar";
 import Restauant from "../components/Restauant";
+import RestaurantServices from "../services/restaurant_services";
+import Swal from "sweetalert2";
 const Home = () => {
 const [restaurants, setRestaurants] = useState([]);
 const [filterRestaurants, setFilterRestaurants] = useState([]);
@@ -21,19 +23,40 @@ const handleSearch = (keyword) =>{
 }
 
   useEffect(() => {
+
+    const getAllRestaurants = async () => {
+      try {
+        const response = await RestaurantServices.getAllRestaurants();
+        console.log(response);
+
+        if (response.status === 200) {
+          setRestaurants(response.data);
+          setFilterRestaurants(response.data);
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to fetch restaurants",
+        });
+        console.error("Error fetching restaurants:", error);
+      }
+    };
+
+    getAllRestaurants();
     //call api: getAllRestaurants
-    fetch("http://localhost:5000/api/v1/restaurant/").then((res)=>{
-      //convert to json
-      return res.json()
-    }).then((Response)=>{
-      //save to state
-      setRestaurants(Response)
-      setFilterRestaurants(Response)
-    }).catch((err)=> {
-      //catch error
-      console.log(err.message);
-    }); 
-  },[])
+    // fetch("http://localhost:5000/api/v1/restaurant/").then((res)=>{
+    //   //convert to json
+    //   return res.json()
+    // }).then((Response)=>{
+    //   //save to state
+    //   setRestaurants(Response)
+    //   setFilterRestaurants(Response)
+    // }).catch((err)=> {
+    //   //catch error
+    //   console.log(err.message);
+    // }); 
+   },[])
   return (
     <div className="container mx-auto">
       <Navbar />

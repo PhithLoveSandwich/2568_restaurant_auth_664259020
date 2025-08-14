@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react'
-import { useParams } from 'react-router';
+import React, {useState} from 'react'
 import Navbar from "../components/Navbar";
-
+import AuthServices from '../services/auth_services';
+import Swal from 'sweetalert2';
 const SignIn = () => {
     const [user, setUser] = useState({
         username: '',
@@ -15,27 +15,71 @@ const SignIn = () => {
     };
 
     const handleSubmit = async () => {
-        setError("");
-        try {
-            const response = await fetch("http://localhost:5000/api/v1/auth/signin", {
-                method: "POST",
-                body: JSON.stringify(user),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-            const data = await response.json();
-            if (response.ok && data.token) {
-                localStorage.setItem("token", data.token);
-                alert("Login success!");
-                window.location.href = "/";
-            } else {
-                setError(data.message || "Login failed");
-            }
-        } catch (error) {
-            setError("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
-        }
-    };
+  setError("");
+  try {
+    const response = await fetch("http://localhost:5000/api/v1/auth/signin", {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.token) {
+      localStorage.setItem("token", data.token);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Login Success",
+        text: "Welcome back!",
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      window.location.href = "/";
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: data.message || "Invalid username or password",
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while logging in",
+    });
+    console.error("Login error:", error);
+  }
+};
+
+
+    // const handleSubmit = async () => 
+    //     {
+    //     setError("");
+    //     try {
+    //         const response = await fetch("http://localhost:5000/api/v1/auth/signin", {
+    //             method: "POST",
+    //             body: JSON.stringify(user),
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             }
+    //         });
+    //         const data = await response.json();
+    //         if (response.ok && data.token) {
+    //             localStorage.setItem("token", data.token);
+    //             alert("Login success!");
+    //             window.location.href = "/";
+    //         } else {
+    //             setError(data.message || "Login failed");
+    //         }
+    //     } catch (error) {
+    //         setError("An error occurred while logging in");
+    //     }
+    // };
 
     return (
         <div className="container mx-auto">

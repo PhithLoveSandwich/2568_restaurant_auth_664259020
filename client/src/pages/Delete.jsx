@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import Navbar from "../components/Navbar";
-
+import Swal from 'sweetalert2';
+import RestaurantServices from '../services/restaurant_services';
 const Delete = () => {
   // 1. Get Id from Url
   const { id } = useParams();
@@ -21,25 +22,46 @@ const Delete = () => {
   
   //3. alert confrim
   const handleSubmit = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this restaurant?");
-    if (!confirmDelete) return;
-
-    try {
-      const response = await fetch("http://localhost:5000/api/v1/restaurant/" + id, {
-        method: "DELETE",
+    const response = await RestaurantServices.deleteRestaurant(id);
+    if (response.status === 200) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Restaurant deleted successfully",
       });
-      if (response.ok) {
-        alert("Restaurant deleted successfully.");
-        setRestaurant({
-          title: '',
-          type: '',
-          img: '',
-        });
-      }
-    } catch (error) {
-      console.log(error);
+      setRestaurant({
+        title: '',
+        type: '',
+        img: '',
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to delete restaurant",
+      });
     }
-  };
+  }
+  //   {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete this restaurant?");
+  //   if (!confirmDelete) return;
+
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/v1/restaurant/" + id, {
+  //       method: "DELETE",
+  //     });
+  //     if (response.ok) {
+  //       alert("Restaurant deleted successfully.");
+  //       setRestaurant({
+  //         title: '',
+  //         type: '',
+  //         img: '',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="container mx-auto">

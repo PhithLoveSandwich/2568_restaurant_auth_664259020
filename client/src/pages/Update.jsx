@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import { useParams } from 'react-router';
 import Navbar from "../components/Navbar";
+import Swal from 'sweetalert2';
+import RestaurantServices from '../services/restaurant_services';
 const Update = () => {
     //1.Get Id from Url
     const { id } = useParams();
@@ -29,27 +31,48 @@ const Update = () => {
         setRestaurant({...restaurant , [name]: value});
     };
     const handleSubmit = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/api/v1/restaurant/" + id,{
-                method: "PUT",
-                body: JSON.stringify(restaurant),
-                headers:
-                {
-                  "Content-Type" : "application/json"
-                }
-            });
-            if (response.ok){
-                alert("Restaurant Update sucessfully")
-                setRestaurant({
-                    title : '',
-                    type : '',
-                    img : '',
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
+      const respondse = await RestaurantServices.updateRestaurant(id, restaurant);
+      if (respondse.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Restaurant updated successfully",
+        });
+        setRestaurant({
+          title: '',
+          type: '',
+          img: '',
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to update restaurant",
+        });
+      }
     }
+    //   {
+    //     try {
+    //         const response = await fetch("http://localhost:5000/api/v1/restaurant/" + id,{
+    //             method: "PUT",
+    //             body: JSON.stringify(restaurant),
+    //             headers:
+    //             {
+    //               "Content-Type" : "application/json"
+    //             }
+    //         });
+    //         if (response.ok){
+    //             alert("Restaurant Update sucessfully")
+    //             setRestaurant({
+    //                 title : '',
+    //                 type : '',
+    //                 img : '',
+    //             })
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
   return (
     <div className="container mx-auto">
         <Navbar />

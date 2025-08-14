@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
 import Navbar from "../components/Navbar";
+import AuthServices from '../services/auth_services';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
     const [user, setUser] = useState({
@@ -12,29 +14,77 @@ const SignUp = () => {
         const { name, value } = e.target;
         setUser({...user , [name]: value});
     };
+
     const handleSubmit = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/api/v1/auth/signup",{
-                method: "POST",
-                body: JSON.stringify(user),
-                headers:
-                {
-                  "Content-Type" : "application/json"
-                }
-            });
-            if (response.ok){
-                alert("User register sucessfully!")
-                setUser({
-                  username : '',
-                  name : '',
-                  email : '',
-                  password : '',
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
+  try {
+    const response = await fetch("http://localhost:5000/api/v1/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      await Swal.fire({
+        icon: "success",
+        title: "Register Success",
+        text: "Your account has been created successfully!",
+        showConfirmButton: false,
+        timer: 1500
+      });
+
+      setUser({
+        username: '',
+        name: '',
+        email: '',
+        password: '',
+      });
+
+      window.location.href = "/login"; // สมัครเสร็จส่งไปหน้า login
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Register Failed",
+        text: data.message || "Something went wrong",
+      });
     }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred while registering",
+    });
+    console.error("Register error:", error);
+  }
+};
+
+
+    // const handleSubmit = async () => {
+    //     try {
+    //         const response = await fetch("http://localhost:5000/api/v1/auth/signup",{
+    //             method: "POST",
+    //             body: JSON.stringify(user),
+    //             headers:
+    //             {
+    //               "Content-Type" : "application/json"
+    //             }
+    //         });
+    //         if (response.ok){
+    //             alert("User register sucessfully!")
+    //             setUser({
+    //               username : '',
+    //               name : '',
+    //               email : '',
+    //               password : '',
+    //             })
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
   return (
     <div className="container mx-auto">
         <Navbar />
