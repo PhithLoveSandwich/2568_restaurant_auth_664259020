@@ -16,119 +16,105 @@ const Form = () => {
   };
 
   const handleSubmit = async () => {
-  try {
-    const response = await RestaurantServices.addRestaurant(restaurant);
-    if (response.status === 200) {
+    try {
+      const response = await RestaurantServices.addRestaurant(restaurant);
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Restaurant added successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setRestaurant({
+          title: '',
+          type: '',
+          img: '',
+        });
+      }
+    } catch (error) {
       Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Restaurant added successfully!",
-        showConfirmButton: false,
-        timer: 1500
+        icon: "error",
+        title: "Error",
+        text: "Failed to add restaurant",
       });
-      setRestaurant({
-        title: '',
-        type: '',
-        img: '',
-      });
+      console.error("Error adding restaurant:", error);
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Failed to add restaurant",
-    });
-    console.error("Error adding restaurant:", error);
-  }
-};
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     const response = await RestaurantServices.addRestaurant(restaurant);
-  //     if (response.status === 200) {
-  //       alert("Restaurant added successfully");
-  //       setRestaurant({
-  //         title: '',
-  //         type: '',
-  //         img: '',
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "Failed to add restaurant",
-  //     });
-  //     console.error("Error adding restaurant:", error);
-  //   }
-  // };
+  };
 
   return (
     <div className="container mx-auto">
-      <Navbar />
-      <h1 className="title justify-center text-3xl text-center m-5 p-5">
-        Grab Restaurant Add Form
-      </h1>
-      <div className='flex flex-center justify-center'>
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Restaurant Title:</legend>
-          <input
-            type="text"
-            className="input flex items-center gap-2 w-2xl"
-            placeholder="Title..."
-            onChange={handleChange}
-            value={restaurant.title}
-            name="title"
-          />
-        </fieldset>
-      </div>
-      <div className='flex flex-center justify-center'>
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Restaurant Type:</legend>
-          <input
-            type="text"
-            className="input flex items-center gap-2 w-2xl"
-            placeholder="Type..."
-            onChange={handleChange}
-            value={restaurant.type}
-            name="type"
-          />
-        </fieldset>
-      </div>
-      <div className='flex flex-center justify-center'>
-        <fieldset className="fieldset">
-          <legend className="fieldset-legend">Restaurant Img:</legend>
-          <input
-            type="text"
-            className="input flex items-center gap-2 w-2xl"
-            placeholder="URL..."
-            onChange={handleChange}
-            value={restaurant.img}
-            name="img"
-          />
-        </fieldset>
-      </div>
-      <div className='flex flex-center justify-center'>
-        {restaurant.img && (
-          <img
-            src={restaurant.img}
-            alt="Restaurant preview"
-            className="mt-4 max-w-xs max-h-64 object-contain border rounded"
-            onError={(e) => {
-              e.target.src = '';
-            }}
-          />
-        )}
-      </div>
-      <div className="flex flex-center justify-center gap-4 mt-6">
-        <button
-          className="btn btn-outline btn-primary"
-          type="button"
-          onClick={handleSubmit}
-        >
-          Add
-        </button>
-        <a href="/" className="btn btn-outline btn-secondary">Cancel</a>
+      <div className="flex justify-center items-center min-h-screen bg-base-200">
+        <div className="card w-full max-w-md shadow-xl bg-base-100 p-6">
+          <div className="card-body">
+            <h1 className="text-3xl font-bold text-center mb-5">
+              Grab Restaurant Add Form
+            </h1>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Title:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Title..."
+                onChange={handleChange}
+                value={restaurant.title}
+                name="title"
+              />
+            </fieldset>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Type:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Type..."
+                onChange={handleChange}
+                value={restaurant.type}
+                name="type"
+              />
+            </fieldset>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Img:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="URL..."
+                onChange={handleChange}
+                value={restaurant.img}
+                name="img"
+              />
+            </fieldset>
+
+            {restaurant.img && (
+              <div className="flex justify-center mb-4">
+                <img
+                  src={restaurant.img}
+                  alt="Restaurant preview"
+                  className="max-w-xs max-h-64 object-contain border rounded"
+                  onError={(e) => { e.target.src = ''; }}
+                />
+              </div>
+            )}
+
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                className="btn btn-outline btn-primary"
+                type="button"
+                onClick={handleSubmit}
+              >
+                Add
+              </button>
+              <a
+                href="/"
+                className="btn btn-outline btn-secondary"
+              >
+                Cancel
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

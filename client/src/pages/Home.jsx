@@ -59,7 +59,6 @@ const handleSearch = (keyword) =>{
    },[])
   return (
     <div className="container mx-auto">
-      <Navbar />
       <div>
         <h1 className="title justify-center text-3xl text-center m-5 p-5">
           Grab Restaurant
