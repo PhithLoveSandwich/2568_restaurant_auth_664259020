@@ -1,81 +1,122 @@
-import React, {useState} from 'react'
-import Navbar from "../components/Navbar";
+import React, { useState } from 'react';
+import RestaurantServices from '../services/restaurant_services';
+import Swal from 'sweetalert2';
+
 const Form = () => {
-    const [restaurant, setRestaurant] = useState({
-        title : '',
-        type : '',
-        img : '',
-    });
-    const handleChange = (e) =>{
-        const { name, value } = e.target;
-        setRestaurant({...restaurant , [name]: value});
-    };
-    const handleSubmit = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/api/v1/restaurant/",{
-                method: "POST",
-                body: JSON.stringify(restaurant),
-                headers:
-                {
-                  "Content-Type" : "application/json"
-                }
-            });
-            if (response.ok){
-                alert("Restaurant added sucessfully")
-                setRestaurant({
-                    title : '',
-                    type : '',
-                    img : '',
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
+  const [restaurant, setRestaurant] = useState({
+    title: '',
+    type: '',
+    img: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setRestaurant({ ...restaurant, [name]: value });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await RestaurantServices.addRestaurant(restaurant);
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Restaurant added successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setRestaurant({
+          title: '',
+          type: '',
+          img: '',
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add restaurant",
+      });
+      console.error("Error adding restaurant:", error);
     }
+  };
+
   return (
     <div className="container mx-auto">
-        <Navbar />
-        <div>
-        <h1 className="title justify-center text-3xl text-center m-5 p-5">
-          Grab Restaurant Add Form
-        </h1>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Restaurant Ttile:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Ttile..." onChange={handleChange} value={restaurant.title} name = "title"/>
+      <div className="flex justify-center items-center min-h-screen bg-base-200">
+        <div className="card w-full max-w-md shadow-xl bg-base-100 p-6">
+          <div className="card-body">
+            <h1 className="text-3xl font-bold text-center mb-5">
+              Grab Restaurant Add Form
+            </h1>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Title:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Title..."
+                onChange={handleChange}
+                value={restaurant.title}
+                name="title"
+              />
             </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Restaurant Type:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Type..." onChange={handleChange} value={restaurant.type} name = "type"/>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Type:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Type..."
+                onChange={handleChange}
+                value={restaurant.type}
+                name="type"
+              />
             </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
-            <fieldset class="fieldset">
-            <legend class="fieldset-legend">Restaurant Img:</legend>
-            <input type="text" class="input flex items-center gap-2 w-2xl" placeholder="Url..." onChange={handleChange} value={restaurant.img} name = "img"/>
+
+            <fieldset className="fieldset mb-4">
+              <legend className="fieldset-legend">Restaurant Img:</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="URL..."
+                onChange={handleChange}
+                value={restaurant.img}
+                name="img"
+              />
             </fieldset>
-        </div>
-        <div className='flex flex-center justify-center'>
+
             {restaurant.img && (
-        <img
-          src={restaurant.img}
-          alt="Restaurant preview"
-          className="mt-4 max-w-xs max-h-64 object-contain border rounded"
-          onError={(e) => {
-            e.target.src = '';
-          }}
-        />
-      )}
+              <div className="flex justify-center mb-4">
+                <img
+                  src={restaurant.img}
+                  alt="Restaurant preview"
+                  className="max-w-xs max-h-64 object-contain border rounded"
+                  onError={(e) => { e.target.src = ''; }}
+                />
+              </div>
+            )}
+
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                className="btn btn-outline btn-primary"
+                type="button"
+                onClick={handleSubmit}
+              >
+                Add
+              </button>
+              <a
+                href="/"
+                className="btn btn-outline btn-secondary"
+              >
+                Cancel
+              </a>
+            </div>
+          </div>
         </div>
-      <div className="flex flex-center justify-center gap-4 mt-6">
-        <a className="btn btn-outline btn-primary" onClick={handleSubmit}>Add</a>
-        <a className="btn btn-outline btn-secondary">Cancel</a>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;

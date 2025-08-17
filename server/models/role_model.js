@@ -11,4 +11,11 @@ const Role = sequelize.define("role",{
         allNull: false,
     },
 });
+Role.sync({force:false})
+.then(() => {
+    console.log("Table Role created or already exists");
+})
+.catch((error)=>{
+    console.log("Error creating table", error);
+});
 export default Role;
