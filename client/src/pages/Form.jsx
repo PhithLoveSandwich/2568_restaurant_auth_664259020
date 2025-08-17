@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from "../components/Navbar";
 import RestaurantServices from '../services/restaurant_services';
 import Swal from 'sweetalert2';
 

@@ -1,5 +1,4 @@
   import React, { useState } from 'react';
-  import Navbar from "../components/Navbar";
   import AuthServices from '../services/auth_services';
   import { useNavigate } from 'react-router-dom';
   import Swal from 'sweetalert2';

@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import Navbar from "../components/Navbar";
 import Restauant from "../components/Restauant";
 import RestaurantServices from "../services/restaurant_services";
 import Swal from "sweetalert2";
