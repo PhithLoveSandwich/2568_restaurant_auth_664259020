@@ -1,104 +1,97 @@
-  import React, { useState } from 'react';
-  import AuthServices from '../services/auth_services';
-  import { useNavigate } from 'react-router-dom';
-  import Swal from 'sweetalert2';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from "../components/Navbar";
+import Swal from "sweetalert2";
+import AuthServices from '../services/auth_services';
+const SignUp = () => {
+     const navigate = useNavigate();
 
-  const SignUp = () => {
-    const navigate = useNavigate();
+  const [user, setUser] = useState({
+    username: '',
+    name: '',
+    email: '',
+    password: '',
+  });
 
-    const [user, setUser] = useState({
-      username: '',
-      name: '',
-      email: '',
-      password: '',
-    });
-
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setUser((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async () => {
-      try {
-        const response = await AuthServices.register(
-          user.username,
-          user.name,
-          user.email,
-          user.password
-        );
-
-        if (response.status === 200) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "User registered successfully!",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-
-          // Reset form
-          setUser({
-            username: '',
-            name: '',
-            email: '',
-            password: '',
-          });
-
-          navigate("/login");
-        }
-      } catch (error) {
-        console.error("Registration error:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Registration Failed",
-          text: error?.response?.data?.message || error.message,
-        });
-      }
-    };
-
-    return (
-      <div className="container mx-auto">
-        <div className="flex justify-center items-center min-h-screen bg-base-300">
-          <div className="card w-full max-w-md shadow-xl bg-base-100">
-            <div className="card-body">
-              <h1 className="text-3xl font-bold text-center mb-5">
-                Grab Restaurant Register Form
-              </h1>
-
-              {["username", "name", "email", "password"].map((field) => (
-                <fieldset key={field} className="fieldset mb-4">
-                  <legend className="fieldset-legend">{field.charAt(0).toUpperCase() + field.slice(1)}:</legend>
-                  <input
-                    type={field === "password" ? "password" : "text"}
-                    className="input w-full"
-                    placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)}...`}
-                    onChange={handleChange}
-                    value={user[field]}
-                    name={field}
-                    required
-                  />
-                </fieldset>
-              ))}
-
-              <div className="flex justify-center gap-4 mt-4">
-                <button
-                  className="btn btn-outline btn-primary"
-                  onClick={handleSubmit}
-                >
-                  Register
-                </button>
-                <a
-                  href="/"
-                  className="btn btn-outline btn-secondary"
-                >
-                  Cancel
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  export default SignUp;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await AuthServices.register(
+        user.username,
+        user.name,
+        user.email,
+        user.password
+      );
+      if (response.status === 200) {
+        await Swal.fire({
+          icon: "success",
+          title: "Register Success",
+          text: "Your account has been created successfully!",
+          showConfirmButton: true
+        });
+        setUser({
+          username: '',
+          name: '',
+          email: '',
+          password: '',
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Register Failed",
+        text: error?.response?.data?.message || error.message || "Something went wrong",
+      });
+    }
+  };
+
+  return (
+    <div className="container mx-auto">
+      <Navbar />
+      <div>
+        <h1 className="title justify-center text-3xl text-center m-5 p-5">
+          Grab Restaurant Register Form
+        </h1>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <div className='flex flex-center justify-center'>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Username:</legend>
+            <input type="text" className="input flex items-center gap-2 w-2xl" placeholder="Username..." onChange={handleChange} value={user.username} name="username" />
+          </fieldset>
+        </div>
+        <div className='flex flex-center justify-center'>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Name:</legend>
+            <input type="text" className="input flex items-center gap-2 w-2xl" placeholder="Name..." onChange={handleChange} value={user.name} name="name" />
+          </fieldset>
+        </div>
+        <div className='flex flex-center justify-center'>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Email:</legend>
+            <input type="text" className="input flex items-center gap-2 w-2xl" placeholder="Email..." onChange={handleChange} value={user.email} name="email" />
+          </fieldset>
+        </div>
+        <div className='flex flex-center justify-center'>
+          <fieldset className="fieldset">
+            <legend className="fieldset-legend">Password:</legend>
+            <input type="password" className="input flex items-center gap-2 w-2xl" placeholder="Password..." onChange={handleChange} value={user.password} name="password" />
+          </fieldset>
+        </div>
+        <div className="flex flex-center justify-center gap-4 mt-6">
+          <button type="submit" className="btn btn-outline btn-primary">Register</button>
+          <button type="button" className="btn btn-outline btn-secondary" onClick={() => navigate("/")}>Cancel</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+
+export default SignUp;

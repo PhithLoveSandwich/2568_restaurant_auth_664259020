@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import RestaurantServices from '../services/restaurant_services';
 import Swal from 'sweetalert2';
-
+import Navbar from "../components/Navbar";
 const Form = () => {
   const [restaurant, setRestaurant] = useState({
     title: '',
@@ -43,6 +43,7 @@ const Form = () => {
 
   return (
     <div className="container mx-auto">
+      <Navbar />
       <div className="flex justify-center items-center min-h-screen bg-base-200">
         <div className="card w-full max-w-md shadow-xl bg-base-100 p-6">
           <div className="card-body">

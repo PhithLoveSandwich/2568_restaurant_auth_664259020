@@ -3,6 +3,7 @@ import AuthServices from '../services/auth_services';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
+import Navbar from '../components/Navbar';
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -21,15 +22,19 @@ const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthServices.login(loginForm.username, loginForm.password);
+            const response = await AuthServices.login(
+                loginForm.username,
+                loginForm.password
+            );
+
             if (response.status === 200 && response.data.token) {
-                // AuthServices.login already calls TokenServices.setUser(response.data)
-                // but we also update context so Navbar reads updated user
+                // ✅ รวม authorities ด้วย
                 const userToStore = {
                     username: response.data.userinfo?.username || '',
                     name: response.data.userinfo?.name || '',
                     email: response.data.userinfo?.email || '',
                     token: response.data.token,
+                    authorities: response.data.authorities || [], 
                 };
                 login(userToStore);
 
@@ -58,10 +63,13 @@ const SignIn = () => {
 
     return (
         <div className="container mx-auto">
+            <Navbar />
             <div className="flex justify-center items-center min-h-screen bg-base-300">
                 <div className="card w-full max-w-md shadow-xl bg-base-100">
                     <div className="card-body">
-                        <h1 className="text-3xl font-bold text-center mb-5">Grab Restaurant LogIn Form</h1>
+                        <h1 className="text-3xl font-bold text-center mb-5">
+                            Grab Restaurant LogIn Form
+                        </h1>
                         <form onSubmit={handleSubmit}>
                             <fieldset className="fieldset mb-4">
                                 <legend className="fieldset-legend">Username:</legend>
@@ -88,10 +96,16 @@ const SignIn = () => {
                             </fieldset>
 
                             <div className="flex justify-center gap-4 mt-4">
-                                <button type="submit" className="btn btn-outline btn-primary">
+                                <button
+                                    type="submit"
+                                    className="btn btn-outline btn-primary"
+                                >
                                     SignIn
                                 </button>
-                                <a href="/signup" className="btn btn-outline btn-secondary">
+                                <a
+                                    href="/signup"
+                                    className="btn btn-outline btn-secondary"
+                                >
                                     SignUp
                                 </a>
                             </div>

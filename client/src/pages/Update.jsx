@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import RestaurantServices from '../services/restaurant_services';
-
+import Navbar from "../components/Navbar";
 const Update = () => {
   // 1. Get Id from URL
   const { id } = useParams();
@@ -50,6 +50,7 @@ const Update = () => {
 
   return (
     <div className="container mx-auto">
+      <Navbar />
       <div className="flex justify-center items-center min-h-screen bg-base-200">
         <div className="card w-full max-w-md shadow-xl bg-base-100 p-6">
           <div className="card-body">

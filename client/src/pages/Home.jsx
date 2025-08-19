@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import Restauant from "../components/Restauant";
+import Navbar from "../components/Navbar";
 import RestaurantServices from "../services/restaurant_services";
 import Swal from "sweetalert2";
 const Home = () => {
@@ -58,6 +59,7 @@ const handleSearch = (keyword) =>{
    },[])
   return (
     <div className="container mx-auto">
+      <Navbar />
       <div>
         <h1 className="title justify-center text-3xl text-center m-5 p-5">
           Grab Restaurant
