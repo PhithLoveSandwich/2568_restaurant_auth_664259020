@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import RestaurantServices from '../services/restaurant_services';
 import Swal from 'sweetalert2';
 import Navbar from "../components/Navbar";
+import { useNavigate } from 'react-router-dom';
 const Form = () => {
+  const navigate = useNavigate();
   const [restaurant, setRestaurant] = useState({
     title: '',
     type: '',
@@ -25,6 +27,7 @@ const Form = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+          navigate('/');
         setRestaurant({
           title: '',
           type: '',
