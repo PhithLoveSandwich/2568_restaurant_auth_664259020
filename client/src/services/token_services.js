@@ -1,39 +1,35 @@
 const getUser = () => {
-    try {
-        return JSON.parse(localStorage.getItem('user'));
-    } catch (e) {
-        return null;
-    }
+  try {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  } catch (error) {
+    console.error("Error parsing user from localStorage:", error);
+    return null;
+  }
 };
 
-// Normalize user object stored in localStorage so other parts of app
-// (e.g. Navbar) can expect user.username, user.name, user.email, user.token
 const setUser = (user) => {
-    if (!user) return;
-    const normalized = {
-        // prefer top-level fields, fall back to nested userinfo
-        username: user.username || user.userinfo?.username || "",
-        name: user.name || user.userinfo?.name || "",
-        email: user.email || user.userinfo?.email || "",
-        token: user.token || user.accessToken || user.userinfo?.token || "",
-    };
-    localStorage.setItem('user', JSON.stringify(normalized));
+  try {
+    localStorage.setItem("user", JSON.stringify(user));
+  } catch (error) {
+    console.error("Error saving user to localStorage:", error);
+  }
 };
 
-const getLocalAcessToken = () => {
-    const user = getUser();
-    return user?.token;
+const getLocalAccessToken = () => {
+  const user = getUser();
+  return user?.token || null; // กันกรณีไม่มี token
 };
 
 const removeUser = () => {
-    localStorage.removeItem('user');
-}
-
-const TokenServices = {
-    getUser,
-    setUser,
-    getLocalAcessToken,
-    removeUser
+  localStorage.removeItem("user");
 };
 
-export default TokenServices;
+const TokenService = {
+  getUser,
+  setUser,
+  getLocalAccessToken,
+  removeUser,
+};
+
+export default TokenService;

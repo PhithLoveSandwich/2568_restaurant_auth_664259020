@@ -1,7 +1,7 @@
 import React from "react";
-
+import { useAuthContext } from "../context/AuthContext";
 const Card = (props) => {
-
+  const { user } = useAuthContext();
   return (
     <div>
       <div className="card bg-base-100 w-96 shadow-sm">
@@ -18,10 +18,17 @@ const Card = (props) => {
           <p>
             {props.type}
           </p>
-          <div className="card-actions justify-end">
-        <a href={"/delete/"+ props.id} className="btn btn-outline btn-secondary">Delete</a>
-        <a href={"/update/"+ props.id} className="btn btn-outline btn-primary">Edit</a>
-          </div>
+          {user && user.authorities?.includes("ROLE_ADMIN") && (
+            <div className="card-actions justify-end"> 
+            <a href={"/delete/"+ props.id} className="btn btn-outline btn-secondary">Delete</a> 
+            <a href={"/update/"+ props.id} className="btn btn-outline btn-primary">Edit</a> 
+            </div>
+            )}
+          {user && user.authorities?.includes("ROLE_MODERATOR") && (
+            <div className="card-actions justify-end">
+            <a href={"/update/"+ props.id} className="btn btn-outline btn-primary">Edit</a> 
+            </div>
+          )}
         </div>
       </div>
     </div>

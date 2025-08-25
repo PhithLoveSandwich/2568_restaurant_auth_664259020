@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import RestaurantServices from '../services/restaurant_services';
-
+import Navbar from "../components/Navbar";
+import { useNavigate } from 'react-router-dom';
 const Update = () => {
   // 1. Get Id from URL
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [restaurant, setRestaurant] = useState({
@@ -14,12 +16,13 @@ const Update = () => {
   });
 
   // 2. Get Restaurant by ID
-  useEffect(() => {
-    fetch(`http://localhost:5000/api/v1/restaurant/${id}`)
-      .then((res) => res.json())
-      .then((response) => setRestaurant(response))
-      .catch((err) => console.log(err.message));
-  }, [id]);
+useEffect(() => {
+  RestaurantServices.getRestaurantById(id)
+    .then((data) => setRestaurant(data))
+    .catch((err) => console.log(err.message));
+}, [id]);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +37,7 @@ const Update = () => {
         title: "Success",
         text: "Restaurant updated successfully",
       });
+          navigate('/');
       setRestaurant({
         title: '',
         type: '',
@@ -50,6 +54,7 @@ const Update = () => {
 
   return (
     <div className="container mx-auto">
+      <Navbar />
       <div className="flex justify-center items-center min-h-screen bg-base-200">
         <div className="card w-full max-w-md shadow-xl bg-base-100 p-6">
           <div className="card-body">

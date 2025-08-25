@@ -9,8 +9,10 @@ const getAllRestaurants = async () => {
 
 //get restaurant by id
 const getRestaurantById = async (id) => {
-    return await api.get(`${RESTO_API}/${id}`);
-}
+  const { data } = await api.get(`${RESTO_API}/${id}`);
+  return data; 
+};
+
 
 //add a new restaurant
 const addRestaurant = async (restaurant) => {
