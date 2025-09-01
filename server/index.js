@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import restaurantRouter from "./routers/restaurant.router.js";
 import authRouter from "./routers/auth.router.js";
+import db from "./models/db.js"
 
 dotenv.config();
 const app = express();
