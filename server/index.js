@@ -3,12 +3,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import restaurantRouter from "./routers/restaurant.router.js";
 import authRouter from "./routers/auth.router.js";
-import sequelize from "./models/db.js";           // Sequelize instance
-import RoleModel from "./models/role_model.js";   // Role model
-import { DataTypes } from "sequelize";
+import sequelize from "./models/db.js";  // Sequelize instance
+import Role from "./models/role.model.js"; // import model ของคุณตรง ๆ
 
 dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL;
@@ -20,27 +18,23 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
 }));
 
-// Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Models
-const Role = RoleModel(sequelize, DataTypes);
-
-// Initialize roles
+// สร้าง role หากยังไม่มี
 const initRole = async () => {
   try {
-    await Role.create({ id: 1, name: "user" });
-    await Role.create({ id: 2, name: "moderator" });
-    await Role.create({ id: 3, name: "admin" });
+    await Role.create({ id: "1", name: "user" });
+    await Role.create({ id: "2", name: "moderator" });
+    await Role.create({ id: "3", name: "admin" });
     console.log("Roles created.");
   } catch (error) {
     console.error("Error creating roles:", error);
   }
 };
 
-// Sync database and init roles
-sequelize.sync({ force: true }).then(async () => {  // ใช้ force: true เฉพาะ development
+// sync database
+sequelize.sync({ force: true }).then(async () => {
   console.log("Database synced");
   await initRole();
 });
