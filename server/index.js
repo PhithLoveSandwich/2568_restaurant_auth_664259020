@@ -4,7 +4,7 @@ import cors from "cors";
 import restaurantRouter from "./routers/restaurant.router.js";
 import authRouter from "./routers/auth.router.js";
 import sequelize from "./models/db.js";  // Sequelize instance
-import Role from "./models/role.model.js"; // import model ของคุณตรง ๆ
+import Role from "./models/role_model.js"; // import model ของคุณตรง ๆ
 
 dotenv.config();
 const app = express();
