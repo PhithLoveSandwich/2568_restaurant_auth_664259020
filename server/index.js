@@ -21,6 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 import db from "./models/db.js";
 const role = db.Role;
 
+db.sequelize.sync({ force: true }).then(async () => {  // ใช้ force: true เพื่อสร้างตารางใหม่ (ถ้าอยากล้างข้อมูลเก่า)
+  console.log("Database synced");
+  await initRole();  // เรียกใช้และรอสร้าง role
+});
+
 const initRole = async () => {
   try {
     await role.create({ id: 1, name: "user" });
@@ -31,11 +36,6 @@ const initRole = async () => {
     console.error("Error creating roles:", error);
   }
 };
-
-// db.sequelize.sync({ force: true }).then(async () => {  // ใช้ force: true เพื่อสร้างตารางใหม่ (ถ้าอยากล้างข้อมูลเก่า)
-//   console.log("Database synced");
-//   await initRole();  // เรียกใช้และรอสร้าง role
-// });
 
 app.get("/", (req, res) => {
   res.send("Restaurant Restful API");
