@@ -3,13 +3,17 @@ import dotenv from "dotenv";
 import cors from "cors";
 import restaurantRouter from "./routers/restaurant.router.js";
 import authRouter from "./routers/auth.router.js";
+import sequelize from "./models/db.js";  // Sequelize instance
+import Role from "./models/role_model.js"; // import model ของคุณตรง ๆ
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
+// CORS
 app.use(cors({
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173", FRONTEND_URL],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
 }));
@@ -17,36 +21,33 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-import db from "./models/db.js";
-const role = db.Role;
-
+// สร้าง role หากยังไม่มี
 const initRole = async () => {
   try {
-    await role.create({ id: 1, name: "user" });
-    await role.create({ id: 2, name: "moderator" });
-    await role.create({ id: 3, name: "admin" });
+    await Role.create({ id: "1", name: "user" });
+    await Role.create({ id: "2", name: "moderator" });
+    await Role.create({ id: "3", name: "admin" });
     console.log("Roles created.");
   } catch (error) {
     console.error("Error creating roles:", error);
   }
 };
 
-// db.sequelize.sync({ force: true }).then(async () => {  // ใช้ force: true เพื่อสร้างตารางใหม่ (ถ้าอยากล้างข้อมูลเก่า)
-//   console.log("Database synced");
-//   await initRole();  // เรียกใช้และรอสร้าง role
-// });
-
-app.get("/", (req, res) => {
-  res.send("Restaurant Restful API");
+// sync database
+sequelize.sync({ force: true }).then(async () => {
+  console.log("Database synced");
+  await initRole();
 });
 
-app.get('/', (req, res) => {
-  res.send('Restaurant Restful API');
+// Routes
+app.get("/", (req, res) => {
+  res.send("Restaurant Restful API");
 });
 
 app.use("/api/v1/restaurant", restaurantRouter);
 app.use("/api/v1/auth", authRouter);
 
+// Start server
 app.listen(PORT, () => {
-  console.log("Listening to http://localhost:" + PORT);
+  console.log(`Listening to http://localhost:${PORT}`);
 });
