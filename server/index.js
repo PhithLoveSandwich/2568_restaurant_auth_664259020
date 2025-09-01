@@ -4,7 +4,7 @@ import cors from "cors";
 import restaurantRouter from "./routers/restaurant.router.js";
 import authRouter from "./routers/auth.router.js";
 import sequelize from "./models/db.js";           // Sequelize instance
-import RoleModel from "./models/role.model.js";   // Role model
+import RoleModel from "./models/role_model.js";   // Role model
 import { DataTypes } from "sequelize";
 
 dotenv.config();
