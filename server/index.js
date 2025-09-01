@@ -19,7 +19,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-import db from "./models/db.js";
 const role = db.Role;
 
 db.sequelize.sync({ force: true }).then(async () => {  // ใช้ force: true เพื่อสร้างตารางใหม่ (ถ้าอยากล้างข้อมูลเก่า)
