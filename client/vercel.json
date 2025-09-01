@@ -1,6 +1,6 @@
 {
-    "routes":{
-        "src" : "/[^.]+",
+    "routes": {
+        "src": "/[^.]+",
         "dest": "/",
         "status": 200
     }
